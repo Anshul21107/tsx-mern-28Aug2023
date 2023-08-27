@@ -1,25 +1,37 @@
-import logo from './logo.svg';
-import './App.css';
+// src/App.js
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import CharacterList from './components/ChacterList';
 
-function App() {
+const App = () => {
+  const [characters, setCharacters] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCharacters = async () => {
+      try {
+        const response = await axios.get('https://swapi.dev/api/people/');
+        setCharacters(response.data.results);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setLoading(false);
+      }
+    };
+
+    fetchCharacters();
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className={`container mx-auto py-8 overflow-hidden`}>
+      <h1 className="text-3xl font-semibold mb-4 flex items-center justify-center">Star Wars Characters</h1>
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <CharacterList characters={characters} />
+      )}
     </div>
   );
-}
+};
 
 export default App;
